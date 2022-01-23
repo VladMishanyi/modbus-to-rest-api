@@ -53,7 +53,7 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
         if (modbusFloat != null && modbusInteger != null){
             modbusFloat.setUseBorders(useBorders, borderMax, borderMin);
             modbusInteger.setUseBorders(useBorders, borderMax, borderMin);
-            deviceCache.getCache().forEach(fil -> {
+            deviceCache.getCache().stream().filter(c -> !c.isWrite()).forEach( fil -> {
                 if (fil.getDataType() == 8) {
                     final List<Float> list =  modbusFloat.readDataFromModBusDigs(
                             digsFloat,
@@ -90,7 +90,7 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
         if (modbusFloat != null && modbusInteger != null){
             modbusFloat.setUseBorders(useBorders, borderMax, borderMin);
             modbusInteger.setUseBorders(useBorders, borderMax, borderMin);
-            deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register)).forEachOrdered( fil -> {
+            deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register) && (!c.isWrite())).forEachOrdered( fil -> {
                 if (fil.getDataType() == 8) {
                     final List<Float> list =  modbusFloat.readDataFromModBusDigs(
                             digsFloat,
@@ -121,7 +121,7 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
                                             final int register,
                                             final String value) {
         if (modbusFloat != null && modbusShort != null) {
-            deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register)).forEachOrdered( fil -> {
+            deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register) && (c.isWrite())).forEachOrdered( fil -> {
                 if (fil.getDataType() == 8) {
                     modbusFloat.writeDataToModBus (
                             modbusMasterSerialFirst,
