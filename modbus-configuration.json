@@ -1,0 +1,28 @@
+{
+  "cache": [
+    {
+      "address": 16,
+      "register": 0,
+      "write": false,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "8",
+      "oldValue": "2",
+      "registerRange": 4,
+      "offset": 4,
+      "dataType": 8
+    },
+    {
+      "address": 16,
+      "register": 0,
+      "write": false,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "8",
+      "oldValue": "2",
+      "registerRange": 4,
+      "offset": 10,
+      "dataType": 8
+    }
+  ]
+}
