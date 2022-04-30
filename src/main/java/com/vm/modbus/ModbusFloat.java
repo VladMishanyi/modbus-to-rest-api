@@ -2,6 +2,8 @@ package com.vm.modbus;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.ModbusLocator;
+import com.serotonin.modbus4j.exception.ModbusInitException;
+import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.vm.modbus.entity.ModbusMasterSerialModel;
 import com.vm.modbus.entity.ModbusMasterTcpModel;
 
@@ -18,7 +20,7 @@ public interface ModbusFloat extends RootModbus<Float> {
             final int adr,
             final BatchRead<Integer> batch,
             final boolean enableBatch,
-            final ModbusLocator... modbusLocator);
+            final ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException;
 
     List<Float> readDataFromModBusDigs(
             final Float pow,
@@ -26,5 +28,5 @@ public interface ModbusFloat extends RootModbus<Float> {
             final int adr,
             final BatchRead<Integer> batch,
             final boolean enableBatch,
-            final ModbusLocator... modbusLocator);
+            final ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException;
 }

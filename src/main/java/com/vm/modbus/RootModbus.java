@@ -2,6 +2,8 @@ package com.vm.modbus;
 
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.ModbusLocator;
+import com.serotonin.modbus4j.exception.ModbusInitException;
+import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.vm.modbus.entity.ModbusMasterSerialModel;
 import com.vm.modbus.entity.ModbusMasterTcpModel;
 
@@ -19,20 +21,20 @@ public interface RootModbus<E extends Number> {
     List<E> readDataFromModBus(ModbusMasterSerialModel modbusMasterSerialModel,
                                       int adr, BatchRead<Integer> batch,
                                       boolean enableBatch,
-                                      ModbusLocator... modbusLocator);
+                                      ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException;
 
     List<E> readDataFromModBus(ModbusMasterTcpModel modbusMasterTcpModel,
                                       int adr, BatchRead<Integer> batch,
                                       boolean enableBatch,
-                                      ModbusLocator... modbusLocator);
+                                      ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException;
 
     void writeDataToModBus(ModbusMasterSerialModel modbusMasterSerialModel,
                                   int adr,
                                   E values,
-                                  ModbusLocator modbusLocator);
+                                  ModbusLocator modbusLocator) throws ModbusInitException, ModbusTransportException;
 
     void writeDataToModBus(ModbusMasterTcpModel modbusMasterTcpModel,
                                   int adr,
                                   E values,
-                                  ModbusLocator modbusLocator);
+                                  ModbusLocator modbusLocator) throws ModbusInitException, ModbusTransportException;
 }

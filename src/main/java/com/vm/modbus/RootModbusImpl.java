@@ -4,7 +4,9 @@ import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.BatchResults;
 import com.serotonin.modbus4j.ModbusLocator;
 import com.serotonin.modbus4j.ModbusMaster;
+import com.serotonin.modbus4j.exception.ErrorResponseException;
 import com.serotonin.modbus4j.exception.ModbusInitException;
+import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.vm.modbus.entity.ModbusMasterSerialModel;
 import com.vm.modbus.entity.ModbusMasterTcpModel;
 import org.slf4j.Logger;
@@ -18,7 +20,6 @@ import java.util.List;
  */
 
 public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> {
-
     private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
     private boolean useBorders = false;
@@ -30,154 +31,130 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
     public RootModbusImpl(){}
 
     @Override
-    public void setUseBorders(final boolean useBorders) {
+    public synchronized void setUseBorders(final boolean useBorders) {
         this.setUseBorders(useBorders, borderMax, borderMin);
     }
 
     @Override
-    public void setUseBorders(final boolean useBorders, final short bMax, final short bMin){
+    public synchronized void setUseBorders(final boolean useBorders, final short bMax, final short bMin){
         this.useBorders = useBorders;
         this.borderMax = bMax;
         this.borderMin = bMin;
     }
 
     @Override
-    public synchronized List<E> readDataFromModBus(ModbusMasterSerialModel modbusMasterSerialModel,
-                                      final int adr,
-                                      final BatchRead<Integer> batch,
-                                      final boolean enableBatch,
-                                      final ModbusLocator ... modbusLocator){
-        ModbusMaster modbusMaster = modbusMasterSerialModel.getMaster();
-        return readData(modbusMaster, adr, batch, enableBatch, modbusLocator);
-    }
-
-    @Override
-    public synchronized List<E> readDataFromModBus(ModbusMasterTcpModel modbusMasterTcpModel,
+    public synchronized List<E> readDataFromModBus(final ModbusMasterSerialModel modbusMasterSerialModel,
                                                    final int adr,
                                                    final BatchRead<Integer> batch,
                                                    final boolean enableBatch,
-                                                   final ModbusLocator ... modbusLocator){
-        ModbusMaster modbusMaster = modbusMasterTcpModel.getMaster();
-        return readData(modbusMaster, adr, batch, enableBatch, modbusLocator);
+                                                   final ModbusLocator ... modbusLocator) throws ModbusInitException, ModbusTransportException {
+        return readData(modbusMasterSerialModel.getMaster(), adr, batch, enableBatch, modbusLocator);
+    }
+
+    @Override
+    public synchronized List<E> readDataFromModBus(final ModbusMasterTcpModel modbusMasterTcpModel,
+                                                   final int adr,
+                                                   final BatchRead<Integer> batch,
+                                                   final boolean enableBatch,
+                                                   final ModbusLocator ... modbusLocator) throws ModbusInitException, ModbusTransportException {
+        return readData(modbusMasterTcpModel.getMaster(), adr, batch, enableBatch, modbusLocator);
     }
 
     @SuppressWarnings("unchecked")
-    private synchronized List<E> readData(ModbusMaster modbusMaster,
-                                         final int adr,
-                                         final BatchRead<Integer> batch,
-                                         final boolean enableBatch,
-                                         final ModbusLocator ... modbusLocator){
+    private List<E> readData(final ModbusMaster modbusMaster,
+                             final int adr,
+                             final BatchRead<Integer> batch,
+                             final boolean enableBatch,
+                             final ModbusLocator ... modbusLocator) throws ModbusInitException, ModbusTransportException {
         List<E> list = new ArrayList<>();
+        initMaster(modbusMaster, adr);
         try {
-            modbusMaster.init();
-            boolean test = modbusMaster.testSlaveNode(adr);
-            LOGGER.info("ModBus Listen slave address №"+ adr + "--"+test);
-            System.out.println("ModBus Listen slave address №"+ adr + "--"+test);
-        }
-        catch (ModbusInitException e){
-            String message = e.getMessage();
-            LOGGER.error("ModBus Init problem, slave address №"+ adr+ "--"+message);
-            System.out.println("ModBus Init problem, slave address №"+ adr+ "--"+message);
-        }
-        finally {
-            try {
-                if (enableBatch){
-                    for (int i=0; i < modbusLocator.length; i++){
-                        batch.addLocator(i,modbusLocator[i]);
-                    }
-                    BatchResults<Integer> batchResults = modbusMaster.send(batch);
-                    for (int i=0; i < modbusLocator.length; i++){
-                        E val = (E) batchResults.getValue(i);
+            if (enableBatch){
+                for (int i=0; i < modbusLocator.length; i++){
+                    batch.addLocator(i,modbusLocator[i]);
+                }
+                BatchResults<Integer> batchResults = modbusMaster.send(batch);
+                for (int i=0; i < modbusLocator.length; i++){
+                    E val = (E) batchResults.getValue(i);
 
-                        if (useBorders){
-                            list.add(i, borderValue(borderMin, borderMax, val));
-                        }else {
-                            list.add(i, val);
-                        }
-                    }
-                }else {
-                    for (int i=0; i < modbusLocator.length; i++){
-                        E val = (E) modbusMaster.getValue(modbusLocator[i]);
-
-                        if (useBorders){
-                            list.add(i, borderValue(borderMin, borderMax, val));
-                        }else {
-                            list.add(i, val);
-                        }
+                    if (useBorders){
+                        list.add(i, borderValue(borderMin, borderMax, val));
+                    }else {
+                        list.add(i, val);
                     }
                 }
+            }else {
+                for (int i=0; i < modbusLocator.length; i++){
+                    E val = (E) modbusMaster.getValue(modbusLocator[i]);
 
-            }catch (Exception e){
-                String message = e.getMessage();
-                LOGGER.error("ModBus Transport problem, slave address №"+ adr+ "--"+message);
-                System.out.println("ModBus Transport problem, slave address №"+ adr+ "--"+message);
-                setValuesDefault(list, modbusLocator.length);
+                    if (useBorders){
+                        list.add(i, borderValue(borderMin, borderMax, val));
+                    }else {
+                        list.add(i, val);
+                    }
+                }
             }
-            finally {
-                LOGGER.info("ModBus Close connection, slave address №"+ adr);
-                System.out.println("ModBus Close connection, slave address №"+ adr);
-                modbusMaster.destroy();
-            }
-            //-----------------------------------------------------------------------------
-            String form = "___";
-            for (int i=0; i < modbusLocator.length; i++){
-                form = form + list.get(i) + "___";
-            }
-            System.out.println("Device №" + adr + "  "+ form);
-            //-----------------------------------------------------------------------------
+        }catch (ModbusTransportException | ErrorResponseException | RuntimeException e){
+            LOGGER.error("ModBus Transport problem, slave address №" + adr + " - " + e.getMessage());
+            setValuesDefault(list, modbusLocator.length);
+            throw new ModbusTransportException(e);
         }
+        finally {
+            modbusMaster.destroy();
+            LOGGER.info("ModBus Close connection transport, slave address №" + adr);
+        }
+        LOGGER.info("ModBus, slave address №" + adr + " - " + list);
         return list;
     }
 
     @Override
-    public synchronized void writeDataToModBus(ModbusMasterSerialModel modbusMasterSerialModel,
-                                  final int adr,
-                                  final E values,
-                                  final ModbusLocator modbusLocator){
-        ModbusMaster modbusMaster = modbusMasterSerialModel.getMaster();
-        writeData(modbusMaster, adr, values, modbusLocator);
+    public synchronized void writeDataToModBus(final ModbusMasterSerialModel modbusMasterSerialModel,
+                                               final int adr,
+                                               final E values,
+                                               final ModbusLocator modbusLocator) throws ModbusInitException, ModbusTransportException {
+        writeData(modbusMasterSerialModel.getMaster(), adr, values, modbusLocator);
     }
 
     @Override
-    public synchronized void writeDataToModBus(ModbusMasterTcpModel modbusMasterTcpModel,
+    public synchronized void writeDataToModBus(final ModbusMasterTcpModel modbusMasterTcpModel,
                                                final int adr,
                                                final E values,
-                                               final ModbusLocator modbusLocator){
-        ModbusMaster modbusMaster = modbusMasterTcpModel.getMaster();
-        writeData(modbusMaster, adr, values, modbusLocator);
+                                               final ModbusLocator modbusLocator) throws ModbusInitException, ModbusTransportException {
+        writeData(modbusMasterTcpModel.getMaster(), adr, values, modbusLocator);
     }
 
-    private synchronized void writeData(ModbusMaster modbusMaster, final int adr,
-                                       final E values,
-                                       final ModbusLocator modbusLocator){
+    private void writeData(final ModbusMaster modbusMaster,
+                                        final int adr,
+                                        final E values,
+                                        final ModbusLocator modbusLocator) throws ModbusInitException, ModbusTransportException {
+
+        initMaster(modbusMaster, adr);
         try {
-            modbusMaster.init();
-            boolean test = modbusMaster.testSlaveNode(adr);
-            LOGGER.info("ModBus Listen slave address №"+ adr + "--"+test);
-            System.out.println("ModBus Listen slave address №"+ adr + "--"+test);
-        }
-        catch (ModbusInitException e){
-            String message = e.getMessage();
-            LOGGER.error("ModBus Init problem, slave address №"+ adr+ "--"+message);
-            System.out.println("ModBus Init problem, slave address №"+ adr+ "--"+message);
+            modbusMaster.setValue(modbusLocator, values);
+        }catch (ModbusTransportException | ErrorResponseException | RuntimeException e){
+            LOGGER.error("ModBus Transport problem, slave address №" + adr + " - " + e.getMessage());
+            throw new ModbusTransportException(e);
         }
         finally {
-            try {
-                modbusMaster.setValue(modbusLocator, values);
-            }catch (Exception e){
-                String message = e.getMessage();
-                LOGGER.error("ModBus Transport problem, slave address №"+ adr+ "--"+message);
-                System.out.println("ModBus Transport problem, slave address №"+ adr+ "--"+message);
-            }
-            finally {
-                LOGGER.info("ModBus Close connection, slave address №"+ adr);
-                System.out.println("ModBus Close connection, slave address №"+ adr);
-                modbusMaster.destroy();
-            }
+            modbusMaster.destroy();
+            LOGGER.info("ModBus Close connection transport, slave address №" + adr);
         }
     }
 
-    abstract void setValuesDefault(List<E> list, int length);
+    private void initMaster(final ModbusMaster modbusMaster, final int adr) throws ModbusInitException {
+        try {
+            modbusMaster.init();
+            LOGGER.info("ModBus Listen, slave address №"+ adr);
+        }
+        catch (ModbusInitException e){
+            LOGGER.error("ModBus Init problem, slave address №"+ adr + " - " + e.getMessage());
+            modbusMaster.destroy();
+            LOGGER.info("ModBus Close connection init, slave address №" + adr);
+            throw new ModbusInitException(e);
+        }
+    }
 
-    abstract E borderValue(short bMin, short bMax, E val);
+    protected abstract void setValuesDefault(List<E> list, int length);
+
+    protected abstract E borderValue(short bMin, short bMax, E val);
 }

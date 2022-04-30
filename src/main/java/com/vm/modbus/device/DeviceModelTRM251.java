@@ -5,12 +5,10 @@ import com.serotonin.modbus4j.ModbusLocator;
 import com.serotonin.modbus4j.code.DataType;
 import com.serotonin.modbus4j.code.RegisterRange;
 import com.vm.modbus.lib.HysComparator;
-import org.springframework.stereotype.Component;
 
 /**
  * Created by KIP-PC99 on 20.09.2018.
  */
-@Component
 public class DeviceModelTRM251 implements DeviceModel {
 
     @JsonIgnore

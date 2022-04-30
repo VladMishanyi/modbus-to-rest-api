@@ -3,33 +3,39 @@ package com.vm.modbus.service;
 import com.vm.modbus.device.DeviceCache;
 import com.vm.modbus.en.DigsFloat;
 import com.vm.modbus.reposiptory.RepositoryModbusUniversal;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.stereotype.Service;
+import com.vm.modbus.reposiptory.RepositoryModbusUniversalImpl;
 
-@Service
-@ComponentScan(basePackages = {"com.vm.modbus"})
 public class ServiceModbusUniversalImpl implements ServiceModbusUniversal {
     private final RepositoryModbusUniversal repository;
 
-    @Autowired
+    public ServiceModbusUniversalImpl() {
+        this.repository = new RepositoryModbusUniversalImpl();
+    }
+
     public ServiceModbusUniversalImpl(RepositoryModbusUniversal repository) {
         this.repository = repository;
     }
 
     @Override
-    public DeviceCache readDataFromRegisterAll (final int address, final int register){
-        return repository.readDataFromRegisterAll(address, register, true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false);
+    public DeviceCache readDataFromRegisterAll (final int address,
+                                                final int register,
+                                                final DeviceCache deviceCache){
+        return repository.readDataFromRegisterAll(address, register, true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false, deviceCache);
     }
 
     @Override
-    public DeviceCache readDataFromRegister (final int address, final int register) {
-        return repository.readDataFromRegister(address, register, true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false);
+    public DeviceCache readDataFromRegister (final int address,
+                                             final int register,
+                                             final DeviceCache deviceCache) {
+        return repository.readDataFromRegister(address, register, true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false, deviceCache);
     }
 
     @Override
-    public DeviceCache writeDataToRegister (final int address, final int register, final String value) {
-        return repository.writeDataToRegister(address, register, value);
+    public DeviceCache writeDataToRegister (final int address,
+                                            final int register,
+                                            final String value,
+                                            final DeviceCache deviceCache) {
+        return repository.writeDataToRegister(address, register, value, deviceCache);
     }
 
 }

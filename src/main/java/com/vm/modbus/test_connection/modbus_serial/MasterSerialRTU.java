@@ -3,7 +3,6 @@ package com.vm.modbus.test_connection.modbus_serial;
 import com.serotonin.modbus4j.BatchRead;
 import com.vm.modbus.*;
 import com.vm.modbus.device.DeviceModelMB110_1TD;
-import com.vm.modbus.device.DeviceModelTRM251;
 import com.vm.modbus.en.DigsFloat;
 import com.vm.modbus.entity.ModbusMasterSerialModel;
 
@@ -16,7 +15,7 @@ import java.util.List;
 public class MasterSerialRTU {
 
     public static void main(String[] args) throws Exception {
-        long startTime = 0;
+        long startTime;
         final ModbusMasterSerialModel modbusMasterSerialModel = new ModbusMasterSerialModel("/dev/ttyUSB0", 9600, 8, 1, 0, 200, 1);
 //        final ModbusMasterSerialModel modbusMasterSerialModel = new ModbusMasterSerialModel("COM29", 9600, 8, 1, 0, 200, 1);
 
@@ -26,8 +25,6 @@ public class MasterSerialRTU {
         modbusInteger.setUseBorders(false);
         final ModbusFloat modbusFloat = new ModbusFloatImpl();
         modbusFloat.setUseBorders(false);
-
-        final DeviceModelTRM251 deviceModelTRM138 = new DeviceModelTRM251();
         final DeviceModelMB110_1TD deviceModelMB110_1TD = new DeviceModelMB110_1TD();
 
         int i = 0;

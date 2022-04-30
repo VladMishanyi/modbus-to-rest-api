@@ -9,7 +9,8 @@ public interface RepositoryModbusUniversal {
                                          final short borderMin,
                                          final short borderMax,
                                          final float digsFloat,
-                                         final boolean enableBatch);
+                                         final boolean enableBatch,
+                                         final DeviceCache deviceCache);
 
     DeviceCache readDataFromRegister (final int address,
                                       final int register,
@@ -17,9 +18,11 @@ public interface RepositoryModbusUniversal {
                                       final short borderMin,
                                       final short borderMax,
                                       final float digsFloat,
-                                      final boolean enableBatch);
+                                      final boolean enableBatch,
+                                      final DeviceCache deviceCache);
 
     DeviceCache writeDataToRegister (final int address,
                                      final int register,
-                                     final String value);
+                                     final String value,
+                                     final DeviceCache deviceCache);
 }

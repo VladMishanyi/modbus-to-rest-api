@@ -1,18 +1,10 @@
 package com.vm.modbus.device;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.serotonin.modbus4j.code.RegisterRange;
 import com.vm.modbus.lib.HysComparator;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
 
-import java.io.Serializable;
-import java.util.Objects;
-
-@Component
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
