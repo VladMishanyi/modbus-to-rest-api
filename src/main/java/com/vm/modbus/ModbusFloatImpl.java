@@ -23,9 +23,10 @@ public class ModbusFloatImpl extends RootModbusImpl<Float> implements ModbusFloa
             final int adr,
             final BatchRead<Integer> batch,
             final boolean enableBatch,
+            final List<Float> list,
             final ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException {
 
-        List<Float> val = super.readDataFromModBus(modbusMasterSerialModel, adr, batch, enableBatch, modbusLocator);
+        List<Float> val = super.readDataFromModBus(modbusMasterSerialModel, adr, batch, enableBatch, list, modbusLocator);
         return val.stream().map( e -> FloatCut.cut(pow, e)).collect(Collectors.toList());
     }
 
@@ -36,21 +37,22 @@ public class ModbusFloatImpl extends RootModbusImpl<Float> implements ModbusFloa
             final int adr,
             final BatchRead<Integer> batch,
             final boolean enableBatch,
+            final List<Float> list,
             final ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException {
 
-        List<Float> val = super.readDataFromModBus(modbusMasterTcpModel, adr, batch, enableBatch, modbusLocator);
+        List<Float> val = super.readDataFromModBus(modbusMasterTcpModel, adr, batch, enableBatch, list, modbusLocator);
         return val.stream().map( e -> FloatCut.cut(pow, e)).collect(Collectors.toList());
     }
 
     @Override
-    protected void setValuesDefault(final List<Float> list, final int length) {
+    public void setValuesDefault(final List<Float> list, final int length) {
         for (int i=0; i<=length; i++){
             list.add(0F);
         }
     }
 
     @Override
-    protected Float borderValue(short bMin, short bMax, Float val){
+    public Float borderValue(short bMin, short bMax, Float val){
         if (val >= (float) bMax) return (float) bMax;
         if (val <= (float) bMin) return (float) bMin;
         return val;

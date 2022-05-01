@@ -5,6 +5,7 @@ import com.serotonin.modbus4j.ModbusLocator;
 import com.serotonin.modbus4j.exception.ModbusInitException;
 import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.vm.modbus.*;
+import com.vm.modbus.cache.MetadataGenerator;
 import com.vm.modbus.device.DeviceCache;
 import com.vm.modbus.entity.ModbusMasterSerialModel;
 import org.slf4j.Logger;
@@ -41,56 +42,64 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
     }
 
     private ModbusMasterSerialModel initMaster() {
-        return new ModbusMasterSerialModel("/dev/ttyUSB0", 9600, 8, 1, 0, 200, 1);
+        return MetadataGenerator.getModbusMasterSerialModel();
+    }
+    private DeviceCache initDevice() {
+        return MetadataGenerator.getDeviceCache();
     }
 
     @Override
-    public DeviceCache readDataFromRegisterAll(final int address,
-                                               final int register,
-                                               final boolean useBorders,
+    public DeviceCache readDataFromRegisterAll(final boolean useBorders,
                                                final short borderMin,
                                                final short borderMax,
                                                final float digsFloat,
-                                               final boolean enableBatch,
-                                               final DeviceCache deviceCache) {
+                                               final boolean enableBatch) {
+        DeviceCache deviceCache = initDevice();
         if (modbusFloat != null && modbusInteger != null){
             modbusFloat.setUseBorders(useBorders, borderMax, borderMin);
             modbusInteger.setUseBorders(useBorders, borderMax, borderMin);
             deviceCache.getCache().stream().filter(c -> !c.isWrite()).forEach( fil -> {
                 if (fil.getDataType() == 8) {
-                    List<Float> list = new ArrayList<>();
+                    List<Float> listFloat = new ArrayList<>();
                     try {
-                        list = modbusFloat.readDataFromModBusDigs(
+                        listFloat = modbusFloat.readDataFromModBusDigs(
                                 digsFloat,
                                 modbusMasterSerialFirst,
                                 fil.getAddress(),
                                 batchRead,
                                 enableBatch,
+                                listFloat,
                                 new ModbusLocator(fil.getAddress(), fil.getRegisterRange(), fil.getOffset(), fil.getDataType()));
                     } catch (ModbusInitException | RuntimeException e) {
+                        modbusFloat.setValuesDefault(listFloat, 1);
                         modbusMasterSerialFirst = initMaster();
+                        LOGGER.error("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     } catch (ModbusTransportException e) {
-                        LOGGER.error("Not connected device: " + address + " offset: " + fil.getOffset());
+                        modbusFloat.setValuesDefault(listFloat, 1);
+                        LOGGER.error("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     }
-                    fil.setValue(list.get(0).toString());
+                    fil.setValue(listFloat.get(0).toString());
                 }
                 if (fil.getDataType() == 2) {
-                    List<Integer> list = new ArrayList<>();
+                    List<Integer> listInt = new ArrayList<>();
                     try {
-                        list = modbusInteger.readDataFromModBus(
+                        listInt = modbusInteger.readDataFromModBus(
                                 modbusMasterSerialFirst,
                                 fil.getAddress(),
                                 batchRead,
                                 enableBatch,
+                                listInt,
                                 new ModbusLocator(fil.getAddress(), fil.getRegisterRange(), fil.getOffset(), fil.getDataType()));
                     } catch (ModbusInitException e) {
+                        modbusInteger.setValuesDefault(listInt, 1);
                         modbusMasterSerialFirst = initMaster();
+                        LOGGER.error("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     } catch (ModbusTransportException e) {
-                        LOGGER.error("Not connected device: " + address + " offset: " + fil.getOffset());
+                        modbusInteger.setValuesDefault(listInt, 1);
+                        LOGGER.error("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     }
-                    fil.setValue(list.get(0).toString());
+                    fil.setValue(listInt.get(0).toString());
                 }
-
             });
         }
         return deviceCache;
@@ -103,46 +112,53 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
                                             final short borderMin,
                                             final short borderMax,
                                             final float digsFloat,
-                                            final boolean enableBatch,
-                                            final DeviceCache deviceCache) {
+                                            final boolean enableBatch) {
+        DeviceCache deviceCache = initDevice();
         if (modbusFloat != null && modbusInteger != null){
             modbusFloat.setUseBorders(useBorders, borderMax, borderMin);
             modbusInteger.setUseBorders(useBorders, borderMax, borderMin);
             deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register) && (!c.isWrite())).forEachOrdered( fil -> {
                 if (fil.getDataType() == 8) {
-                    List<Float> list = new ArrayList<>();
+                    List<Float> listFloat = new ArrayList<>();
                     try {
-                        list = modbusFloat.readDataFromModBusDigs(
+                        listFloat = modbusFloat.readDataFromModBusDigs(
                                 digsFloat,
                                 modbusMasterSerialFirst,
                                 fil.getAddress(),
                                 batchRead,
                                 enableBatch,
+                                listFloat,
                                 new ModbusLocator(fil.getAddress(), fil.getRegisterRange(), fil.getOffset(), fil.getDataType()));
                     } catch (ModbusInitException e) {
+                        modbusFloat.setValuesDefault(listFloat, 1);
                         modbusMasterSerialFirst = initMaster();
+                        LOGGER.error("ModBus read init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
-                        LOGGER.error("Not connected device: " + address + " offset: " + fil.getOffset());
+                        modbusFloat.setValuesDefault(listFloat, 1);
+                        LOGGER.error("ModBus read transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
-                    fil.setValue(list.get(0).toString());
+                    fil.setValue(listFloat.get(0).toString());
                 }
                 if (fil.getDataType() == 2) {
-                    List<Integer> list = new ArrayList<>();
+                    List<Integer> listInt = new ArrayList<>();
                     try {
-                        list = modbusInteger.readDataFromModBus(
+                        listInt = modbusInteger.readDataFromModBus(
                                 modbusMasterSerialFirst,
                                 fil.getAddress(),
                                 batchRead,
                                 enableBatch,
+                                listInt,
                                 new ModbusLocator(fil.getAddress(), fil.getRegisterRange(), fil.getOffset(), fil.getDataType()));
                     } catch (ModbusInitException e) {
+                        modbusInteger.setValuesDefault(listInt, 1);
                         modbusMasterSerialFirst = initMaster();
+                        LOGGER.error("ModBus Init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
-                        LOGGER.error("Not connected device: " + address + " offset: " + fil.getOffset());
+                        modbusInteger.setValuesDefault(listInt, 1);
+                        LOGGER.error("ModBus transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
-                    fil.setValue(list.get(0).toString());
+                    fil.setValue(listInt.get(0).toString());
                 }
-
             });
         }
         return deviceCache;
@@ -151,8 +167,8 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
     @Override
     public DeviceCache writeDataToRegister (final int address,
                                             final int register,
-                                            final String value,
-                                            final DeviceCache deviceCache) {
+                                            final String value) {
+        DeviceCache deviceCache = initDevice();
         if (modbusFloat != null && modbusShort != null) {
             deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register) && (c.isWrite())).forEachOrdered( fil -> {
                 if (fil.getDataType() == 8) {
@@ -164,8 +180,9 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
                                 new ModbusLocator(fil.getAddress(), fil.getRegisterRange(), fil.getOffset(), fil.getDataType()));
                     } catch (ModbusInitException e) {
                         modbusMasterSerialFirst = initMaster();
+                        LOGGER.error("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
-                        LOGGER.error("Not connected device: " + address + " offset: " + fil.getOffset());
+                        LOGGER.error("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(value);
                 }
@@ -178,12 +195,12 @@ public class RepositoryModbusUniversalImpl implements RepositoryModbusUniversal 
                                 new ModbusLocator(fil.getAddress(), fil.getRegisterRange(), fil.getOffset(), fil.getDataType()));
                     } catch (ModbusInitException e) {
                         modbusMasterSerialFirst = initMaster();
+                        LOGGER.error("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
-                        LOGGER.error("Not connected device: " + address + " offset: " + fil.getOffset());
+                        LOGGER.error("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(value);
                 }
-
             });
         }
         return deviceCache;

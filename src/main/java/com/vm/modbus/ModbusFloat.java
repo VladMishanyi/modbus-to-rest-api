@@ -20,6 +20,7 @@ public interface ModbusFloat extends RootModbus<Float> {
             final int adr,
             final BatchRead<Integer> batch,
             final boolean enableBatch,
+            final List<Float> list,
             final ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException;
 
     List<Float> readDataFromModBusDigs(
@@ -28,5 +29,6 @@ public interface ModbusFloat extends RootModbus<Float> {
             final int adr,
             final BatchRead<Integer> batch,
             final boolean enableBatch,
+            final List<Float> list,
             final ModbusLocator... modbusLocator) throws ModbusInitException, ModbusTransportException;
 }

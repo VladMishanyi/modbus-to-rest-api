@@ -8,13 +8,13 @@ import java.util.List;
 
 public class ModbusShortImpl extends RootModbusImpl<Short> implements ModbusShort{
     @Override
-    protected void setValuesDefault(final List<Short> list, final int length) {
+    public void setValuesDefault(final List<Short> list, final int length) {
         for (int i=0; i<=length; i++){
             list.add((short) 0);
         }
     }
     @Override
-    protected Short borderValue(short bMin, short bMax, Short val){
+    public Short borderValue(short bMin, short bMax, Short val){
         if (val >= bMax) return bMax;
         if (val <= bMin) return bMin;
         return val;

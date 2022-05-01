@@ -39,6 +39,11 @@ public class ModbusBodyQuery {
         this.valueFloat = valueFloat;
     }
 
+    public ModbusBodyQuery(int queryNumber, String valueString){
+        this.queryNumber = queryNumber;
+        this.valueString = valueString;
+    }
+
     public int getQueryNumber() {
         return queryNumber;
     }

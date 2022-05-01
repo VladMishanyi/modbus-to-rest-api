@@ -17,25 +17,21 @@ public class ServiceModbusUniversalImpl implements ServiceModbusUniversal {
     }
 
     @Override
-    public DeviceCache readDataFromRegisterAll (final int address,
-                                                final int register,
-                                                final DeviceCache deviceCache){
-        return repository.readDataFromRegisterAll(address, register, true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false, deviceCache);
+    public DeviceCache readDataFromRegisterAll (){
+        return repository.readDataFromRegisterAll(true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false);
     }
 
     @Override
     public DeviceCache readDataFromRegister (final int address,
-                                             final int register,
-                                             final DeviceCache deviceCache) {
-        return repository.readDataFromRegister(address, register, true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false, deviceCache);
+                                             final int register) {
+        return repository.readDataFromRegister(address, register, true, (short) 0, (short) 500, DigsFloat.ONE_DIG, false);
     }
 
     @Override
     public DeviceCache writeDataToRegister (final int address,
                                             final int register,
-                                            final String value,
-                                            final DeviceCache deviceCache) {
-        return repository.writeDataToRegister(address, register, value, deviceCache);
+                                            final String value) {
+        return repository.writeDataToRegister(address, register, value);
     }
 
 }

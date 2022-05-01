@@ -37,8 +37,7 @@ public class ChainModbus extends Thread{
                 this.sleep(1000);
             }catch (InterruptedException e){
                 String message = e.getMessage();
-                LOGGER.error("Interrupted"+this.getClass()+"thread --"+message);
-                System.out.println("Interrupted"+this.getClass()+"thread --"+message);
+                LOGGER.error("Interrupted:" + this.getClass() + "thread --" + message);
             }
         }
     }

@@ -8,14 +8,14 @@ import java.util.List;
 public class ModbusIntegerImpl extends RootModbusImpl<Integer> implements ModbusInteger {
 
     @Override
-    protected void setValuesDefault(final List<Integer> list, final int length) {
+    public void setValuesDefault(final List<Integer> list, final int length) {
         for (int i=0; i<=length; i++){
             list.add(0);
         }
     }
 
     @Override
-    protected Integer borderValue(short bMin, short bMax, Integer val){
+    public Integer borderValue(short bMin, short bMax, Integer val){
         if (val >= (int) bMax) return (int) bMax;
         if (val <= (int) bMin) return (int) bMin;
         return val;

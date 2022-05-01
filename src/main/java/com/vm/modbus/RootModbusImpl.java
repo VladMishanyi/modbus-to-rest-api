@@ -12,7 +12,6 @@ import com.vm.modbus.entity.ModbusMasterTcpModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -36,7 +35,7 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
     }
 
     @Override
-    public synchronized void setUseBorders(final boolean useBorders, final short bMax, final short bMin){
+    public synchronized void setUseBorders(final boolean useBorders, final short bMax, final short bMin) {
         this.useBorders = useBorders;
         this.borderMax = bMax;
         this.borderMin = bMin;
@@ -47,8 +46,9 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
                                                    final int adr,
                                                    final BatchRead<Integer> batch,
                                                    final boolean enableBatch,
+                                                   final List<E> list,
                                                    final ModbusLocator ... modbusLocator) throws ModbusInitException, ModbusTransportException {
-        return readData(modbusMasterSerialModel.getMaster(), adr, batch, enableBatch, modbusLocator);
+        return readData(modbusMasterSerialModel.getMaster(), adr, batch, enableBatch, list, modbusLocator);
     }
 
     @Override
@@ -56,8 +56,9 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
                                                    final int adr,
                                                    final BatchRead<Integer> batch,
                                                    final boolean enableBatch,
+                                                   final List<E> list,
                                                    final ModbusLocator ... modbusLocator) throws ModbusInitException, ModbusTransportException {
-        return readData(modbusMasterTcpModel.getMaster(), adr, batch, enableBatch, modbusLocator);
+        return readData(modbusMasterTcpModel.getMaster(), adr, batch, enableBatch, list, modbusLocator);
     }
 
     @SuppressWarnings("unchecked")
@@ -65,16 +66,16 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
                              final int adr,
                              final BatchRead<Integer> batch,
                              final boolean enableBatch,
+                             final List<E> list,
                              final ModbusLocator ... modbusLocator) throws ModbusInitException, ModbusTransportException {
-        List<E> list = new ArrayList<>();
         initMaster(modbusMaster, adr);
         try {
             if (enableBatch){
-                for (int i=0; i < modbusLocator.length; i++){
+                for (int i=0; i < modbusLocator.length; i++) {
                     batch.addLocator(i,modbusLocator[i]);
                 }
                 BatchResults<Integer> batchResults = modbusMaster.send(batch);
-                for (int i=0; i < modbusLocator.length; i++){
+                for (int i=0; i < modbusLocator.length; i++) {
                     E val = (E) batchResults.getValue(i);
 
                     if (useBorders){
@@ -94,14 +95,9 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
                     }
                 }
             }
-        }catch (ModbusTransportException | ErrorResponseException | RuntimeException e){
-            LOGGER.error("ModBus Transport problem, slave address №" + adr + " - " + e.getMessage());
-            setValuesDefault(list, modbusLocator.length);
-            throw new ModbusTransportException(e);
-        }
-        finally {
+        }catch (ModbusTransportException | ErrorResponseException | RuntimeException e) {
             modbusMaster.destroy();
-            LOGGER.info("ModBus Close connection transport, slave address №" + adr);
+            throw new ModbusTransportException(e);
         }
         LOGGER.info("ModBus, slave address №" + adr + " - " + list);
         return list;
@@ -131,30 +127,20 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
         initMaster(modbusMaster, adr);
         try {
             modbusMaster.setValue(modbusLocator, values);
-        }catch (ModbusTransportException | ErrorResponseException | RuntimeException e){
-            LOGGER.error("ModBus Transport problem, slave address №" + adr + " - " + e.getMessage());
-            throw new ModbusTransportException(e);
-        }
-        finally {
+        }catch (ModbusTransportException | ErrorResponseException | RuntimeException e) {
             modbusMaster.destroy();
-            LOGGER.info("ModBus Close connection transport, slave address №" + adr);
+            throw new ModbusTransportException(e);
         }
     }
 
     private void initMaster(final ModbusMaster modbusMaster, final int adr) throws ModbusInitException {
         try {
             modbusMaster.init();
-            LOGGER.info("ModBus Listen, slave address №"+ adr);
+            LOGGER.info("ModBus Listen, slave address №" + adr);
         }
         catch (ModbusInitException e){
-            LOGGER.error("ModBus Init problem, slave address №"+ adr + " - " + e.getMessage());
             modbusMaster.destroy();
-            LOGGER.info("ModBus Close connection init, slave address №" + adr);
             throw new ModbusInitException(e);
         }
     }
-
-    protected abstract void setValuesDefault(List<E> list, int length);
-
-    protected abstract E borderValue(short bMin, short bMax, E val);
 }

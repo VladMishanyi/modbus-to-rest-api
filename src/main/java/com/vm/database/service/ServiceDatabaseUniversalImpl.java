@@ -1,6 +1,6 @@
 package com.vm.database.service;
 
-import com.vm.database.repository.RepositoryUniversal;
+import com.vm.database.repository.RepositoryDatabaseUniversal;
 import com.vm.database.table.TableModelUniversal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,12 +12,12 @@ import java.util.List;
 
 @Service
 @ComponentScan(basePackages = {"com.vm"})
-public class ServiceUniversalImpl implements ServiceUniversal {
-    private final RepositoryUniversal repositoryUniversal;
+public class ServiceDatabaseUniversalImpl implements ServiceDatabaseUniversal {
+    private final RepositoryDatabaseUniversal repositoryDatabaseUniversal;
 
     @Autowired
-    public ServiceUniversalImpl(final RepositoryUniversal repositoryUniversal) {
-        this.repositoryUniversal = repositoryUniversal;
+    public ServiceDatabaseUniversalImpl(final RepositoryDatabaseUniversal repositoryDatabaseUniversal) {
+        this.repositoryDatabaseUniversal = repositoryDatabaseUniversal;
     }
 
     @Transactional(readOnly = true)
@@ -26,22 +26,21 @@ public class ServiceUniversalImpl implements ServiceUniversal {
                                                                         final int register,
                                                                         final LocalDateTime start,
                                                                         final LocalDateTime end) {
-        return repositoryUniversal.findByAddressAndOffsetAndDateTimeBetween (address, register, start, end);
+        return repositoryDatabaseUniversal.findByAddressAndOffsetAndDateTimeBetween (address, register, start, end);
     }
     @Transactional(readOnly = true)
     @Override
     public TableModelUniversal findLastValueByAddressAndOffsetAndDateTime (final int address, final int register) {
-        return repositoryUniversal.findLastValueByAddressAndOffsetAndDateTime (address, register);
+        return repositoryDatabaseUniversal.findLastValueByAddressAndOffsetAndDateTime (address, register);
     }
     @Transactional
     @Override
     public void addTableDevice(final TableModelUniversal tableUniversal) {
-        repositoryUniversal.saveAndFlush(tableUniversal);
+        repositoryDatabaseUniversal.saveAndFlush(tableUniversal);
     }
     @Transactional
     @Override
     public void addAllTableDevice(final List<TableModelUniversal> tableUniversalList) {
-        repositoryUniversal.saveAll(tableUniversalList);
-    }
+        repositoryDatabaseUniversal.saveAll(tableUniversalList);
     }
 }
