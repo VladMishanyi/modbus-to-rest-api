@@ -4,9 +4,8 @@ import com.vm.database.device_to_table.DeviceToTableUniversal;
 import com.vm.database.service.ServiceDatabaseUniversal;
 import com.vm.database.table.TableModelUniversal;
 import com.vm.modbus.cache.MetadataGenerator;
-import com.vm.modbus.device.DeviceModelUniversal;
 import com.vm.modbus.service.ServiceModbusUniversal;
-import com.vm.modbus.service.ServiceModbusUniversalImpl;
+import com.vm.modbus.service.ServiceModbusSerialUniversalImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.stereotype.Component;
@@ -21,7 +20,7 @@ public class TaskUniversalImpl implements TaskUniversal {
     @Autowired
     public TaskUniversalImpl(final ServiceDatabaseUniversal serviceDatabaseUniversal) {
         this.serviceDatabaseUniversal = serviceDatabaseUniversal;
-        this.serviceModbusUniversal = new ServiceModbusUniversalImpl();
+        this.serviceModbusUniversal = new ServiceModbusSerialUniversalImpl();
     }
     @Override
     public ServiceDatabaseUniversal getServiceDatabaseUniversal() {
@@ -37,8 +36,9 @@ public class TaskUniversalImpl implements TaskUniversal {
     public void readModbusAndWriteToTable() {
         serviceModbusUniversal.readDataFromRegisterAll();
         counter++;
+        //allow write to database oly one per minute, as thread seeping every 1 sec
         if (counter >= 60){
-            MetadataGenerator.getDeviceCache().getCache().stream().filter(DeviceModelUniversal::hysteresis).forEachOrdered(ele -> {
+            MetadataGenerator.getDeviceCache().getCache().stream().filter(ele -> ele.hysteresis() && ele.isArchive()).forEachOrdered(ele -> {
                 TableModelUniversal tableModel = DeviceToTableUniversal.convert(ele, new TableModelUniversal());
                 serviceDatabaseUniversal.addTableDevice(tableModel);
             });

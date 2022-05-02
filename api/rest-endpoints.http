@@ -1,0 +1,80 @@
+###
+POST http://192.168.8.191:8080/database/range
+Content-Type: application/json
+
+{
+  "address": 1,
+  "register": 1,
+  "from": "2021-02-02T15:00:00.187",
+  "to": "2021-02-02T17:00:00.187"
+}
+###
+GET http://192.168.8.191:8080/database/get-last-row?address=1&register=1
+Accept: application/json
+###
+GET http://192.168.8.191:8080/database/get-current-date-time
+Accept: application/json
+###
+GET http://192.168.8.191:8080/modbus/read-all
+Accept: application/json
+###
+GET http://192.168.8.191:8080/modbus/read-one?address=1&register=1
+Accept: application/json
+###
+GET http://192.168.8.191:8080/modbus/write-one?address=1&register=1&value=5
+Accept: application/json
+###
+POST http://192.168.8.191:8080/modbus/write-config-device
+Content-Type: application/json
+
+{
+  "cache": [
+    {
+      "address": 1,
+      "register": 1,
+      "write": false,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "10",
+      "oldValue": "11",
+      "registerRange": 3,
+      "offset": 0,
+      "dataType": 2
+    }
+  ]
+}
+###
+GET http://192.168.8.191:8080/modbus/read-config-device
+Accept: application/json
+###
+POST http://192.168.8.191:8080/modbus/write-config-modbus-serial
+Content-Type: application/json
+
+{
+  "port": "/dev/ttyUSB0",
+  "baduRate": 9600,
+  "dataBits": 8,
+  "stopBits": 1,
+  "parity": 0,
+  "timeout": 200,
+  "retries": 1
+}
+###
+GET http://192.168.8.191:8080/modbus/read-config-modbus-serial
+Accept: application/json
+###
+POST http://192.168.8.191:8080/modbus/write-config-modbus-tcp
+Content-Type: application/json
+
+{
+  "host": "localhost",
+  "port": 2222,
+  "timeout": 500,
+  "retries": 1
+}
+###
+GET http://192.168.8.191:8080/modbus/read-config-modbus-tcp
+Accept: application/json
+###
+GET http://192.168.8.191:8080/chain/modbus
+Accept: application/json

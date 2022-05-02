@@ -2,17 +2,17 @@ package com.vm.modbus.service;
 
 import com.vm.modbus.device.DeviceCache;
 import com.vm.modbus.en.DigsFloat;
+import com.vm.modbus.reposiptory.RepositoryModbusTcpUniversalImpl;
 import com.vm.modbus.reposiptory.RepositoryModbusUniversal;
-import com.vm.modbus.reposiptory.RepositoryModbusUniversalImpl;
 
-public class ServiceModbusUniversalImpl implements ServiceModbusUniversal {
+public class ServiceModbusTcpUniversalImpl implements ServiceModbusUniversal {
     private final RepositoryModbusUniversal repository;
 
-    public ServiceModbusUniversalImpl() {
-        this.repository = new RepositoryModbusUniversalImpl();
+    public ServiceModbusTcpUniversalImpl() {
+        this.repository = new RepositoryModbusTcpUniversalImpl();
     }
 
-    public ServiceModbusUniversalImpl(RepositoryModbusUniversal repository) {
+    public ServiceModbusTcpUniversalImpl(RepositoryModbusUniversal repository) {
         this.repository = repository;
     }
 

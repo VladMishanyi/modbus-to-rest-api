@@ -9,7 +9,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.time.LocalDateTime;
 
 public class ModbusBodyDateRange {
-
+    private int address;
+    private int register;
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
@@ -42,5 +43,21 @@ public class ModbusBodyDateRange {
 
     public void setTo(LocalDateTime to) {
         this.to = to;
+    }
+
+    public int getAddress() {
+        return address;
+    }
+
+    public void setAddress(int address) {
+        this.address = address;
+    }
+
+    public int getRegister() {
+        return register;
+    }
+
+    public void setRegister(int register) {
+        this.register = register;
     }
 }

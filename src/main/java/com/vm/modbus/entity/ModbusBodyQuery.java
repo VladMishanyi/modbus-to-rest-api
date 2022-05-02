@@ -4,91 +4,39 @@ package com.vm.modbus.entity;
  * Created by KIP-PC99 on 26.11.2018.
  */
 public class ModbusBodyQuery {
-
-    private int queryNumber;
-
-    private byte valueByte;
-
-    private short valueShort;
-
-    private int valueInt;
-
-    private float valueFloat;
-
-    private String valueString;
+    private int address;
+    private int register;
+    private String value;
 
     public ModbusBodyQuery(){}
 
-    public ModbusBodyQuery(int queryNumber, byte valueByte){
-        this.queryNumber = queryNumber;
-        this.valueByte = valueByte;
+    public ModbusBodyQuery(final int address, final int register, final String value) {
+        this.address = address;
+        this.register = register;
+        this.value = value;
     }
 
-    public ModbusBodyQuery(int queryNumber, short valueShort){
-        this.queryNumber = queryNumber;
-        this.valueShort = valueShort;
+    public int getAddress() {
+        return address;
     }
 
-    public ModbusBodyQuery(int queryNumber, int valueInt){
-        this.queryNumber = queryNumber;
-        this.valueInt = valueInt;
+    public void setAddress(int address) {
+        this.address = address;
     }
 
-    public ModbusBodyQuery(int queryNumber, float valueFloat){
-        this.queryNumber = queryNumber;
-        this.valueFloat = valueFloat;
+    public int getRegister() {
+        return register;
     }
 
-    public ModbusBodyQuery(int queryNumber, String valueString){
-        this.queryNumber = queryNumber;
-        this.valueString = valueString;
+    public void setRegister(int register) {
+        this.register = register;
     }
 
-    public int getQueryNumber() {
-        return queryNumber;
+    public String getValue() {
+        return value;
     }
 
-    public void setQueryNumber(int queryNumber) {
-        this.queryNumber = queryNumber;
-    }
-
-    public byte getValueByte() {
-        return valueByte;
-    }
-
-    public void setValueByte(byte valueByte) {
-        this.valueByte = valueByte;
-    }
-
-    public short getValueShort() {
-        return valueShort;
-    }
-
-    public void setValueShort(short valueShort) {
-        this.valueShort = valueShort;
-    }
-
-    public int getValueInt() {
-        return valueInt;
-    }
-
-    public void setValueInt(int valueInt) {
-        this.valueInt = valueInt;
-    }
-
-    public float getValueFloat() {
-        return valueFloat;
-    }
-
-    public void setValueFloat(float valueFloat) {
-        this.valueFloat = valueFloat;
-    }
-
-    public String getValueString() {
-        return valueString;
-    }
-
-    public void setValueString(String valueString) {
-        this.valueString = valueString;
+    public void setValue(String value) {
+        this.value = value;
     }
 }

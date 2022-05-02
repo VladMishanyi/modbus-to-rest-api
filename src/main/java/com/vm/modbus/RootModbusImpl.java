@@ -100,6 +100,7 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
             throw new ModbusTransportException(e);
         }
         LOGGER.info("ModBus, slave address №" + adr + " - " + list);
+        System.out.println("ModBus, slave address №" + adr + " - " + list);
         return list;
     }
 
@@ -137,6 +138,7 @@ public abstract class RootModbusImpl<E extends Number> implements RootModbus<E> 
         try {
             modbusMaster.init();
             LOGGER.info("ModBus Listen, slave address №" + adr);
+            System.out.println("ModBus Listen, slave address №" + adr);
         }
         catch (ModbusInitException e){
             modbusMaster.destroy();

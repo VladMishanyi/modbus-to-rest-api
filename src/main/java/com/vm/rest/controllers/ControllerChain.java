@@ -1,7 +1,7 @@
 package com.vm.rest.controllers;
 
 import com.vm.rest.chain.ChainModbus;
-import com.vm.rest.tasks.TaskTRM251;
+import com.vm.rest.tasks.TaskUniversal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -15,16 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @ComponentScan(basePackages = {"com.vm.rest.chain"})
 @RequestMapping(value = "/chain")
 public class ControllerChain {
-
     private ChainModbus chainModbus;
-
-    private TaskTRM251 taskTRM251;
-
+    private TaskUniversal task;
     @Autowired
     public ControllerChain(final ChainModbus chainModbus,
-                           final TaskTRM251 taskTRM251){
+                           final TaskUniversal task){
         this.chainModbus = chainModbus;
-        this.taskTRM251 = taskTRM251;
+        this.task = task;
     }
 
     @RequestMapping(value = "/modbus", method = RequestMethod.GET)
@@ -35,7 +32,8 @@ public class ControllerChain {
     @Scheduled(fixedRate = 1000*60)
     private void loopModbus(){
         if (!chainModbus.isAlive()){
-            chainModbus = new ChainModbus(taskTRM251);
+            chainModbus.interrupt();
+            chainModbus = new ChainModbus(task);
         }
     }
 }
