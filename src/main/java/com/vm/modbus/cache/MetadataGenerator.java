@@ -13,14 +13,11 @@ import com.vm.modbus.entity.ModbusMasterTcpModel;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 public class MetadataGenerator {
     private final static String pathToJsonDeviceCache = "./modbus-configuration-device-cache.json";
     private final static String pathToJsonModbusMasterSerialCache = "./modbus-configuration-master-serial-cache.json";
     private final static String pathToJsonModbusMasterTcpCache = "./modbus-configuration-master-tcp-cache.json";
-    private final static ReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private final static ObjectMapper jsonMapper = new ObjectMapper();
     private static DeviceCache deviceCache = new DeviceCache(
             new DeviceModelUniversal(
@@ -55,61 +52,25 @@ public class MetadataGenerator {
         return modbusMasterTcpModel;
     }
 
-    public static void writeToJsonFileDeviceCache(final DeviceCache deviceCache) throws IOException, StreamWriteException, DatabindException {
-        if (readWriteLock.writeLock().tryLock()) {
-            readWriteLock.writeLock().lock();
-            jsonMapper.writeValue(new File(pathToJsonDeviceCache), deviceCache);
-            MetadataGenerator.deviceCache = deviceCache;
-            readWriteLock.writeLock().unlock();
-        } else {
-            throw new IOException("Can't lock json writer");
-        }
+    public synchronized static void writeToJsonFileDeviceCache(final DeviceCache deviceCache) throws IOException, StreamWriteException, DatabindException {
+        jsonMapper.writeValue(new File(pathToJsonDeviceCache), deviceCache);
+        MetadataGenerator.deviceCache = deviceCache;
     }
-    public static void readFromJsonFileDeviceCache() throws IOException, StreamReadException, DatabindException {
-        if (readWriteLock.readLock().tryLock()) {
-            readWriteLock.readLock().lock();
-            MetadataGenerator.deviceCache = jsonMapper.readValue(new File(pathToJsonDeviceCache), DeviceCache.class);
-            readWriteLock.readLock().unlock();
-        } else {
-            throw new IOException("Can't lock json reader");
-        }
+    public synchronized static void readFromJsonFileDeviceCache() throws IOException, StreamReadException, DatabindException {
+        MetadataGenerator.deviceCache = jsonMapper.readValue(new File(pathToJsonDeviceCache), DeviceCache.class);
     }
-    public static void writeToJsonFileModbusMasterSerialCache(final ModbusMasterSerialModel modbusMasterSerialModel) throws IOException, StreamWriteException, DatabindException {
-        if (readWriteLock.writeLock().tryLock()) {
-            readWriteLock.writeLock().lock();
-            jsonMapper.writeValue(new File(pathToJsonModbusMasterSerialCache), modbusMasterSerialModel);
-            MetadataGenerator.modbusMasterSerialModel = modbusMasterSerialModel;
-            readWriteLock.writeLock().unlock();
-        } else {
-            throw new IOException("Can't lock json writer");
-        }
+    public synchronized static void writeToJsonFileModbusMasterSerialCache(final ModbusMasterSerialModel modbusMasterSerialModel) throws IOException, StreamWriteException, DatabindException {
+        jsonMapper.writeValue(new File(pathToJsonModbusMasterSerialCache), modbusMasterSerialModel);
+        MetadataGenerator.modbusMasterSerialModel = modbusMasterSerialModel;
     }
-    public static void readFromJsonFileModbusMasterSerialCache() throws IOException, StreamReadException, DatabindException {
-        if (readWriteLock.readLock().tryLock()) {
-            readWriteLock.readLock().lock();
-            MetadataGenerator.modbusMasterSerialModel = jsonMapper.readValue(new File(pathToJsonModbusMasterSerialCache), ModbusMasterSerialModel.class);
-            readWriteLock.readLock().unlock();
-        } else {
-            throw new IOException("Can't lock json reader");
-        }
+    public synchronized static void readFromJsonFileModbusMasterSerialCache() throws IOException, StreamReadException, DatabindException {
+        MetadataGenerator.modbusMasterSerialModel = jsonMapper.readValue(new File(pathToJsonModbusMasterSerialCache), ModbusMasterSerialModel.class);
     }
-    public static void writeToJsonFileModbusMasterTcpCache(final ModbusMasterTcpModel modbusMasterTcpModel) throws IOException, StreamWriteException, DatabindException {
-        if (readWriteLock.writeLock().tryLock()) {
-            readWriteLock.writeLock().lock();
-            jsonMapper.writeValue(new File(pathToJsonModbusMasterTcpCache), modbusMasterTcpModel);
-            MetadataGenerator.modbusMasterTcpModel = modbusMasterTcpModel;
-            readWriteLock.writeLock().unlock();
-        } else {
-            throw new IOException("Can't lock json writer");
-        }
+    public synchronized static void writeToJsonFileModbusMasterTcpCache(final ModbusMasterTcpModel modbusMasterTcpModel) throws IOException, StreamWriteException, DatabindException {
+        jsonMapper.writeValue(new File(pathToJsonModbusMasterTcpCache), modbusMasterTcpModel);
+        MetadataGenerator.modbusMasterTcpModel = modbusMasterTcpModel;
     }
-    public static void readFromJsonFileModbusMasterTcpCache() throws IOException, StreamReadException, DatabindException {
-        if (readWriteLock.readLock().tryLock()) {
-            readWriteLock.readLock().lock();
-            MetadataGenerator.modbusMasterTcpModel = jsonMapper.readValue(new File(pathToJsonModbusMasterTcpCache), ModbusMasterTcpModel.class);
-            readWriteLock.readLock().unlock();
-        } else {
-            throw new IOException("Can't lock json reader");
-        }
+    public synchronized static void readFromJsonFileModbusMasterTcpCache() throws IOException, StreamReadException, DatabindException {
+        MetadataGenerator.modbusMasterTcpModel = jsonMapper.readValue(new File(pathToJsonModbusMasterTcpCache), ModbusMasterTcpModel.class);
     }
 }

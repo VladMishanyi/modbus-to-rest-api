@@ -3,10 +3,12 @@ package com.vm.rest.controllers;
 import com.vm.modbus.cache.MetadataGenerator;
 import com.vm.modbus.device.DeviceCache;
 import com.vm.modbus.device.DeviceModelUniversal;
+import com.vm.modbus.entity.ModbusBodyQuery;
 import com.vm.modbus.entity.ModbusMasterSerialModel;
 import com.vm.modbus.entity.ModbusMasterTcpModel;
 import com.vm.modbus.service.ServiceModbusUniversal;
 import com.vm.modbus.service.ServiceModbusSerialUniversalImpl;
+import com.vm.rest.chain.ChainModbus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -33,6 +35,7 @@ public class ControllerModbusUniversal {
     @RequestMapping(value = "/read-one", method = RequestMethod.GET)
     public DeviceCache readRegisterOne(@RequestParam(value = "address", defaultValue = "0") int address,
                                        @RequestParam(value = "register", defaultValue = "0") int register){
+        ChainModbus.modbusBodyQueryQueue.add(new ModbusBodyQuery(address, register, false));
         DeviceCache lists = MetadataGenerator.getDeviceCache();
         DeviceModelUniversal device = lists.getCache().stream().filter( el -> el.getAddress() == address && el.getRegister() == register).findFirst().orElse(null);
         return new DeviceCache(device);
@@ -42,7 +45,10 @@ public class ControllerModbusUniversal {
     public DeviceCache writeRegisterOne(@RequestParam(value = "address", defaultValue = "0") int address,
                                         @RequestParam(value = "register", defaultValue = "0") int register,
                                         @RequestParam(value = "value", defaultValue = "0") String value){
-        return service.writeDataToRegister(address, register, value);
+        ChainModbus.modbusBodyQueryQueue.add(new ModbusBodyQuery(address, register, value, true));
+        DeviceCache lists = MetadataGenerator.getDeviceCache();
+        DeviceModelUniversal device = lists.getCache().stream().filter( el -> el.getAddress() == address && el.getRegister() == register).findFirst().orElse(null);
+        return new DeviceCache(device);
     }
 
     @RequestMapping(value = "/write-config-device", consumes = "application/json", produces = "application/json", method = RequestMethod.POST)

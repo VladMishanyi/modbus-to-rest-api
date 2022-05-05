@@ -25,13 +25,13 @@ public abstract class TableModel implements Serializable, Cloneable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "db_id")
     private long id;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    @Column(name = "date", columnDefinition = "TIMESTAMP")
+    @Column(name = "db_date", columnDefinition = "TIMESTAMP")
     private LocalDateTime date;
 
     public TableModel(){}

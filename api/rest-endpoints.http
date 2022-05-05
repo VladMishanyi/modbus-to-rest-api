@@ -1,38 +1,38 @@
 ###
-POST http://192.168.8.191:8080/database/range
+POST http://localhost:8080/database/range
 Content-Type: application/json
 
 {
-  "address": 1,
-  "register": 1,
-  "from": "2021-02-02T15:00:00.187",
-  "to": "2021-02-02T17:00:00.187"
+  "address": 16,
+  "register": 10,
+  "from": "2022-05-05T23:28:00",
+  "to": "2022-05-05T23:44:00"
 }
 ###
-GET http://192.168.8.191:8080/database/get-last-row?address=1&register=1
+GET http://localhost:8080/database/get-last-row?address=16&register=10
 Accept: application/json
 ###
-GET http://192.168.8.191:8080/database/get-current-date-time
+GET http://localhost:8080/database/get-current-date-time
 Accept: application/json
 ###
-GET http://192.168.8.191:8080/modbus/read-all
+GET http://localhost:8080/modbus/read-all
 Accept: application/json
 ###
-GET http://192.168.8.191:8080/modbus/read-one?address=1&register=1
+GET http://localhost:8080/modbus/read-one?address=16&register=1
 Accept: application/json
 ###
-GET http://192.168.8.191:8080/modbus/write-one?address=1&register=1&value=5
+GET http://localhost:8080/modbus/write-one?address=16&register=1&value=5
 Accept: application/json
 ###
-POST http://192.168.8.191:8080/modbus/write-config-device
+POST http://localhost:8080/modbus/write-config-device
 Content-Type: application/json
 
 {
   "cache": [
     {
-      "address": 1,
-      "register": 1,
-      "write": false,
+      "address": 16,
+      "register": 0,
+      "write": true,
       "archive": true,
       "hysteresis": "1",
       "value": "10",
@@ -40,14 +40,86 @@ Content-Type: application/json
       "registerRange": 3,
       "offset": 0,
       "dataType": 2
+    },
+    {
+      "address": 16,
+      "register": 1,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "10",
+      "oldValue": "11",
+      "registerRange": 3,
+      "offset": 1,
+      "dataType": 8
+    },
+    {
+      "address": 16,
+      "register": 4,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "10",
+      "oldValue": "11",
+      "registerRange": 4,
+      "offset": 4,
+      "dataType": 8
+    },
+    {
+      "address": 16,
+      "register": 10,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "10",
+      "oldValue": "11",
+      "registerRange": 4,
+      "offset": 10,
+      "dataType": 8
+    },
+    {
+      "address": 24,
+      "register": 0,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "10",
+      "oldValue": "11",
+      "registerRange": 3,
+      "offset": 0,
+      "dataType": 2
+    },
+    {
+      "address": 24,
+      "register": 4,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "10",
+      "oldValue": "11",
+      "registerRange": 4,
+      "offset": 4,
+      "dataType": 8
+    },
+    {
+      "address": 24,
+      "register": 10,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "10",
+      "oldValue": "11",
+      "registerRange": 4,
+      "offset": 10,
+      "dataType": 8
     }
   ]
 }
 ###
-GET http://192.168.8.191:8080/modbus/read-config-device
+GET http://localhost:8080/modbus/read-config-device
 Accept: application/json
 ###
-POST http://192.168.8.191:8080/modbus/write-config-modbus-serial
+POST http://localhost:8080/modbus/write-config-modbus-serial
 Content-Type: application/json
 
 {
@@ -60,21 +132,21 @@ Content-Type: application/json
   "retries": 1
 }
 ###
-GET http://192.168.8.191:8080/modbus/read-config-modbus-serial
+GET http://localhost:8080/modbus/read-config-modbus-serial
 Accept: application/json
 ###
-POST http://192.168.8.191:8080/modbus/write-config-modbus-tcp
+POST http://localhost:8080/modbus/write-config-modbus-tcp
 Content-Type: application/json
 
 {
   "host": "localhost",
   "port": 2222,
-  "timeout": 500,
+  "timeout": 200,
   "retries": 1
 }
 ###
-GET http://192.168.8.191:8080/modbus/read-config-modbus-tcp
+GET http://localhost:8080/modbus/read-config-modbus-tcp
 Accept: application/json
 ###
-GET http://192.168.8.191:8080/chain/modbus
+GET http://localhost:8080/chain/modbus
 Accept: application/json

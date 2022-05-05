@@ -11,31 +11,31 @@ public class TableModelUniversal extends TableModel {
 
     private static final long serialVersionUID = 1L;
 
-    @Column(name = "address")
+    @Column(name = "db_address")
     private int address;
 
-    @Column(name = "register")
+    @Column(name = "db_register")
     private int register;
 
-    @Column(name = "write")
+    @Column(name = "db_write")
     private boolean write;
 
-    @Column(name = "archive")
+    @Column(name = "db_archive")
     private boolean archive;
 
-    @Column(name = "hysteresis")
+    @Column(name = "db_hysteresis")
     private String hysteresis;
 
-    @Column(name = "value")
+    @Column(name = "db_value")
     private String value;
 
-    @Column(name = "registerRange")
+    @Column(name = "db_register_range")
     private int registerRange;
 
-    @Column(name = "offset")
+    @Column(name = "db_offset")
     private int offset;
 
-    @Column(name = "dataType")
+    @Column(name = "db_data_type")
     private int dataType;
 
     public TableModelUniversal(){}

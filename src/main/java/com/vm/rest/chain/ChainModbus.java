@@ -1,5 +1,6 @@
 package com.vm.rest.chain;
 
+import com.vm.modbus.cache.MetadataGenerator;
 import com.vm.modbus.entity.ModbusBodyQuery;
 import com.vm.rest.tasks.TaskUniversal;
 import org.slf4j.Logger;
@@ -21,16 +22,33 @@ public class ChainModbus extends Thread{
 
     private final TaskUniversal task;
 
+    private boolean triggerInit = true;
+
     @Autowired
     public ChainModbus(final TaskUniversal task){
         this.task = task;
         this.start();
     }
 
+    private void initConfig() {
+        try {
+            MetadataGenerator.readFromJsonFileModbusMasterSerialCache();
+            MetadataGenerator.readFromJsonFileModbusMasterTcpCache();
+            MetadataGenerator.readFromJsonFileDeviceCache();
+            triggerInit = false;
+        } catch (Exception e) {
+            LOGGER.error("Can't init configuration from json: " + e.getMessage());
+        }
+    }
+
     @Override
     public void run(){
         while (!this.isInterrupted()){
             try {
+                if (triggerInit) {
+                    this.initConfig();
+                }
+                this.initConfig();
                 task.readModbusAndWriteToTable();
                 checkQueryQueue();
                 this.sleep(1000);
@@ -43,7 +61,8 @@ public class ChainModbus extends Thread{
         if (modbusBodyQueryQueue.size() > 0){
             while (!modbusBodyQueryQueue.isEmpty()){
                 ModbusBodyQuery body = modbusBodyQueryQueue.poll();
-                task.getServiceModbusUniversal().writeDataToRegister(body.getAddress(), body.getRegister(), body.getValue());
+                if (body.isWrite()) task.getServiceModbusUniversal().writeDataToRegister(body.getAddress(), body.getRegister(), body.getValue());
+                if (!body.isWrite()) task.getServiceModbusUniversal().readDataFromRegister(body.getAddress(), body.getRegister());
             }
         }
     }

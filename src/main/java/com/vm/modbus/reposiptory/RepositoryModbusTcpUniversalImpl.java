@@ -58,7 +58,7 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
         if (modbusFloat != null && modbusInteger != null){
             modbusFloat.setUseBorders(useBorders, borderMax, borderMin);
             modbusInteger.setUseBorders(useBorders, borderMax, borderMin);
-            deviceCache.getCache().stream().filter(c -> !c.isWrite()).forEach( fil -> {
+            deviceCache.getCache().forEach( fil -> {
                 if (fil.getDataType() == 8) {
                     List<Float> listFloat = new ArrayList<>();
                     try {
@@ -74,11 +74,9 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
                         modbusFloat.setValuesDefault(listFloat, 1);
                         modbusMasterTcpFirst = initMaster();
                         LOGGER.error("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
-                        System.out.println("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     } catch (ModbusTransportException e) {
                         modbusFloat.setValuesDefault(listFloat, 1);
                         LOGGER.error("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
-                        System.out.println("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     }
                     fil.setValue(listFloat.get(0).toString());
                 }
@@ -96,11 +94,9 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
                         modbusInteger.setValuesDefault(listInt, 1);
                         modbusMasterTcpFirst = initMaster();
                         LOGGER.error("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
-                        System.out.println("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     } catch (ModbusTransportException e) {
                         modbusInteger.setValuesDefault(listInt, 1);
                         LOGGER.error("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
-                        System.out.println("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     }
                     fil.setValue(listInt.get(0).toString());
                 }
@@ -121,7 +117,7 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
         if (modbusFloat != null && modbusInteger != null){
             modbusFloat.setUseBorders(useBorders, borderMax, borderMin);
             modbusInteger.setUseBorders(useBorders, borderMax, borderMin);
-            deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register) && (!c.isWrite())).forEachOrdered( fil -> {
+            deviceCache.getCache().stream().filter( c -> (c.getAddress() == address) && (c.getRegister() == register)).forEachOrdered( fil -> {
                 if (fil.getDataType() == 8) {
                     List<Float> listFloat = new ArrayList<>();
                     try {
@@ -137,11 +133,9 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
                         modbusFloat.setValuesDefault(listFloat, 1);
                         modbusMasterTcpFirst = initMaster();
                         LOGGER.error("ModBus read init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus read init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
                         modbusFloat.setValuesDefault(listFloat, 1);
                         LOGGER.error("ModBus read transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus read transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(listFloat.get(0).toString());
                 }
@@ -159,11 +153,9 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
                         modbusInteger.setValuesDefault(listInt, 1);
                         modbusMasterTcpFirst = initMaster();
                         LOGGER.error("ModBus Init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus Init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
                         modbusInteger.setValuesDefault(listInt, 1);
                         LOGGER.error("ModBus transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(listInt.get(0).toString());
                 }
@@ -189,10 +181,8 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
                     } catch (ModbusInitException e) {
                         modbusMasterTcpFirst = initMaster();
                         LOGGER.error("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
                         LOGGER.error("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(value);
                 }
@@ -206,10 +196,8 @@ public class RepositoryModbusTcpUniversalImpl implements RepositoryModbusUnivers
                     } catch (ModbusInitException e) {
                         modbusMasterTcpFirst = initMaster();
                         LOGGER.error("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     } catch (ModbusTransportException e) {
                         LOGGER.error("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                        System.out.println("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(value);
                 }
