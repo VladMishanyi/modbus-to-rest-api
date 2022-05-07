@@ -8,8 +8,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RepositoryDatabaseUniversal extends JpaRepository<TableModelUniversal, Long> {
-
-    @Query(value = "SELECT * FROM modbus as m WHERE m.db_address = ?1 AND m.db_register = ?2 AND m.db_date FROM_UNIXTIME(?3) AND FROM_UNIXTIME(?4)", nativeQuery = true)
+    @Query(value = "SELECT * FROM modbus as m WHERE m.db_address = ?1 AND m.db_register = ?2 AND m.db_date BETWEEN ?3 AND ?4", nativeQuery = true)
     List<TableModelUniversal> findByAddressAndOffsetAndDateTimeBetween (final int address,
                                                                         final int register,
                                                                         final LocalDateTime start,

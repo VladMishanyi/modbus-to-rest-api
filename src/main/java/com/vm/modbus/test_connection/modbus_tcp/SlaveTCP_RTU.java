@@ -16,6 +16,19 @@ public class SlaveTCP_RTU {
         final ModbusSlaveSet slave = factory.createTcpPortSlave(2222, false);
         final BasicProcessImage processImage16 = new BasicProcessImage(16);//this device reserved addresses 16-23
         final BasicProcessImage processImage24 = new BasicProcessImage(24);//this device reserved addresses 24-31
+        processImage16.setHoldingRegister(0, DataType.TWO_BYTE_INT_UNSIGNED, 3);
+        processImage16.setHoldingRegister(1, DataType.FOUR_BYTE_FLOAT, 1.1F);
+        processImage16.setHoldingRegister(2, DataType.TWO_BYTE_INT_UNSIGNED, 2);
+        processImage16.setHoldingRegister(3, DataType.FOUR_BYTE_FLOAT, 1.2F);
+        processImage16.setInputRegister(4, DataType.FOUR_BYTE_FLOAT, 1.3F);
+        processImage16.setInputRegister(10, DataType.FOUR_BYTE_FLOAT, 1.4F);
+
+        processImage24.setHoldingRegister(0, DataType.TWO_BYTE_INT_UNSIGNED, 4);
+        processImage24.setHoldingRegister(1, DataType.FOUR_BYTE_FLOAT, 1.5F);
+        processImage24.setHoldingRegister(2, DataType.TWO_BYTE_INT_UNSIGNED, 6);
+        processImage24.setHoldingRegister(3, DataType.FOUR_BYTE_FLOAT, 1.6F);
+        processImage24.setInputRegister(4, DataType.FOUR_BYTE_FLOAT, 1.7F);
+        processImage24.setInputRegister(10, DataType.FOUR_BYTE_FLOAT, 1.8);
 
 
         Runnable thread = () -> {
@@ -45,7 +58,7 @@ public class SlaveTCP_RTU {
                 }
             }
         };
-        new Thread(thread).start();
+//        new Thread(thread).start();
 
 
         try {

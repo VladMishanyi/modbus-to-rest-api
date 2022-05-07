@@ -36,8 +36,8 @@ public class ControllerModbusUniversal {
     public DeviceCache readRegisterOne(@RequestParam(value = "address", defaultValue = "0") int address,
                                        @RequestParam(value = "register", defaultValue = "0") int register){
         ChainModbus.modbusBodyQueryQueue.add(new ModbusBodyQuery(address, register, false));
-        DeviceCache lists = MetadataGenerator.getDeviceCache();
-        DeviceModelUniversal device = lists.getCache().stream().filter( el -> el.getAddress() == address && el.getRegister() == register).findFirst().orElse(null);
+        DeviceModelUniversal device = MetadataGenerator.getDeviceCache().getCache().stream().filter( el ->
+                el.getAddress() == address && el.getRegister() == register).findFirst().orElse(null);
         return new DeviceCache(device);
     }
 
@@ -46,8 +46,8 @@ public class ControllerModbusUniversal {
                                         @RequestParam(value = "register", defaultValue = "0") int register,
                                         @RequestParam(value = "value", defaultValue = "0") String value){
         ChainModbus.modbusBodyQueryQueue.add(new ModbusBodyQuery(address, register, value, true));
-        DeviceCache lists = MetadataGenerator.getDeviceCache();
-        DeviceModelUniversal device = lists.getCache().stream().filter( el -> el.getAddress() == address && el.getRegister() == register).findFirst().orElse(null);
+        DeviceModelUniversal device = MetadataGenerator.getDeviceCache().getCache().stream().filter( el ->
+                el.getAddress() == address && el.getRegister() == register).findFirst().orElse(null);
         return new DeviceCache(device);
     }
 

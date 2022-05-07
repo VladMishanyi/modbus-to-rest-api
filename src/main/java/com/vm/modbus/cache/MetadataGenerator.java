@@ -26,8 +26,8 @@ public class MetadataGenerator {
                     true,
                     true,
                     "1",
-                    "10",
-                    "11",
+                    "1",
+                    "1",
                     RegisterRange.HOLDING_REGISTER,
                     37,
                     DataType.FOUR_BYTE_FLOAT));
@@ -40,15 +40,15 @@ public class MetadataGenerator {
             200,
             1);
 
-    private static ModbusMasterTcpModel modbusMasterTcpModel = new ModbusMasterTcpModel ("192.168.0.10", 502, 500, 1);
-    public static DeviceCache getDeviceCache() {
+    private static ModbusMasterTcpModel modbusMasterTcpModel = new ModbusMasterTcpModel ("192.168.0.10", 502, 200, 1);
+    public synchronized static DeviceCache getDeviceCache() {
         return deviceCache;
     }
-    public static ModbusMasterSerialModel getModbusMasterSerialModel() {
+    public synchronized static ModbusMasterSerialModel getModbusMasterSerialModel() {
         return modbusMasterSerialModel;
     }
 
-    public static ModbusMasterTcpModel getModbusMasterTcpModel() {
+    public synchronized static ModbusMasterTcpModel getModbusMasterTcpModel() {
         return modbusMasterTcpModel;
     }
 

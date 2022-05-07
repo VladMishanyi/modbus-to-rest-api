@@ -48,7 +48,6 @@ public class ChainModbus extends Thread{
                 if (triggerInit) {
                     this.initConfig();
                 }
-                this.initConfig();
                 task.readModbusAndWriteToTable();
                 checkQueryQueue();
                 this.sleep(1000);
@@ -58,11 +57,12 @@ public class ChainModbus extends Thread{
         }
     }
     private void checkQueryQueue() {
-        if (modbusBodyQueryQueue.size() > 0){
-            while (!modbusBodyQueryQueue.isEmpty()){
+        if (!modbusBodyQueryQueue.isEmpty()) {
+            while (!modbusBodyQueryQueue.isEmpty()) {
                 ModbusBodyQuery body = modbusBodyQueryQueue.poll();
                 if (body.isWrite()) task.getServiceModbusUniversal().writeDataToRegister(body.getAddress(), body.getRegister(), body.getValue());
                 if (!body.isWrite()) task.getServiceModbusUniversal().readDataFromRegister(body.getAddress(), body.getRegister());
+                if (body.getAddress() == 0 && body.getRegister() == 0 && body.getValue() == null && !body.isWrite()) task.getServiceModbusUniversal().readDataFromRegisterAll();
             }
         }
     }

@@ -1,1 +1,88 @@
-{"cache":[{"address":16,"register":0,"write":true,"archive":true,"hysteresis":"1","value":"10","oldValue":"11","registerRange":3,"offset":0,"dataType":2},{"address":16,"register":1,"write":true,"archive":true,"hysteresis":"1","value":"10","oldValue":"11","registerRange":3,"offset":1,"dataType":8},{"address":16,"register":4,"write":true,"archive":true,"hysteresis":"1","value":"10","oldValue":"11","registerRange":4,"offset":4,"dataType":8},{"address":16,"register":10,"write":true,"archive":true,"hysteresis":"1","value":"10","oldValue":"11","registerRange":4,"offset":10,"dataType":8},{"address":24,"register":0,"write":true,"archive":true,"hysteresis":"1","value":"10","oldValue":"11","registerRange":3,"offset":0,"dataType":2},{"address":24,"register":4,"write":true,"archive":true,"hysteresis":"1","value":"10","oldValue":"11","registerRange":4,"offset":4,"dataType":8},{"address":24,"register":10,"write":true,"archive":true,"hysteresis":"1","value":"10","oldValue":"11","registerRange":4,"offset":10,"dataType":8}]}
+{
+  "cache": [
+    {
+      "address": 16,
+      "register": 0,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "0",
+      "oldValue": "0",
+      "registerRange": 3,
+      "offset": 0,
+      "dataType": 2
+    },
+    {
+      "address": 16,
+      "register": 1,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "0",
+      "oldValue": "0",
+      "registerRange": 3,
+      "offset": 1,
+      "dataType": 8
+    },
+    {
+      "address": 16,
+      "register": 4,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "0",
+      "oldValue": "0",
+      "registerRange": 4,
+      "offset": 4,
+      "dataType": 8
+    },
+    {
+      "address": 16,
+      "register": 10,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "0",
+      "oldValue": "0",
+      "registerRange": 4,
+      "offset": 10,
+      "dataType": 8
+    },
+    {
+      "address": 24,
+      "register": 0,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "0",
+      "oldValue": "0",
+      "registerRange": 3,
+      "offset": 0,
+      "dataType": 2
+    },
+    {
+      "address": 24,
+      "register": 4,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "0",
+      "oldValue": "0",
+      "registerRange": 4,
+      "offset": 4,
+      "dataType": 8
+    },
+    {
+      "address": 24,
+      "register": 10,
+      "write": true,
+      "archive": true,
+      "hysteresis": "1",
+      "value": "0",
+      "oldValue": "0",
+      "registerRange": 4,
+      "offset": 10,
+      "dataType": 8
+    }
+  ]
+}
