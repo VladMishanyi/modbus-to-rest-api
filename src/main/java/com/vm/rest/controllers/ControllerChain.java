@@ -26,13 +26,12 @@ public class ControllerChain {
 
     @RequestMapping(value = "/modbus", method = RequestMethod.GET)
     public boolean checkStatusModbusChain(){
-        return chainModbus.isAlive();
+        return chainModbus.isInterrupted();
     }
 
     @Scheduled(fixedRate = 1000*60)
     private void loopModbus(){
-        if (!chainModbus.isAlive()){
-            chainModbus.interrupt();
+        if (chainModbus.isInterrupted()){
             chainModbus = new ChainModbus(task);
         }
     }

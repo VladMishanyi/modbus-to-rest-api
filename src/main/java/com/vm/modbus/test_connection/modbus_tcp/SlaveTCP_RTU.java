@@ -38,19 +38,19 @@ public class SlaveTCP_RTU {
                 try {
                     i++;
                     f++;
-                    processImage16.setHoldingRegister(0, DataType.TWO_BYTE_INT_UNSIGNED, i);
-                    processImage16.setHoldingRegister(1, DataType.FOUR_BYTE_FLOAT, i*0.1);
-                    processImage16.setHoldingRegister(2, DataType.TWO_BYTE_INT_UNSIGNED, i+2);
-                    processImage16.setHoldingRegister(3, DataType.FOUR_BYTE_FLOAT, i*0.2F);
-                    processImage16.setInputRegister(4, DataType.FOUR_BYTE_FLOAT, i*0.3F);
+//                    processImage16.setHoldingRegister(0, DataType.TWO_BYTE_INT_UNSIGNED, i);
+//                    processImage16.setHoldingRegister(1, DataType.FOUR_BYTE_FLOAT, i*0.1);
+//                    processImage16.setHoldingRegister(2, DataType.TWO_BYTE_INT_UNSIGNED, i+2);
+//                    processImage16.setHoldingRegister(3, DataType.FOUR_BYTE_FLOAT, i*0.2F);
+//                    processImage16.setInputRegister(4, DataType.FOUR_BYTE_FLOAT, i*0.3F);
                     processImage16.setInputRegister(10, DataType.FOUR_BYTE_FLOAT, i*0.4F);
 
-                    processImage24.setHoldingRegister(0, DataType.TWO_BYTE_INT_UNSIGNED, i);
-                    processImage24.setHoldingRegister(1, DataType.FOUR_BYTE_FLOAT, i*0.5F);
-                    processImage24.setHoldingRegister(2, DataType.TWO_BYTE_INT_UNSIGNED, i-2);
-                    processImage24.setHoldingRegister(3, DataType.FOUR_BYTE_FLOAT, i*0.6F);
+//                    processImage24.setHoldingRegister(0, DataType.TWO_BYTE_INT_UNSIGNED, i);
+//                    processImage24.setHoldingRegister(1, DataType.FOUR_BYTE_FLOAT, i*0.5F);
+//                    processImage24.setHoldingRegister(2, DataType.TWO_BYTE_INT_UNSIGNED, i-2);
+//                    processImage24.setHoldingRegister(3, DataType.FOUR_BYTE_FLOAT, i*0.6F);
                     processImage24.setInputRegister(4, DataType.FOUR_BYTE_FLOAT, i*0.7F);
-                    processImage24.setInputRegister(10, DataType.FOUR_BYTE_FLOAT, i*0.8);
+//                    processImage24.setInputRegister(10, DataType.FOUR_BYTE_FLOAT, i*0.8);
                     System.out.println(i);
                     Thread.sleep(1000);
                 } catch (InterruptedException e) {
@@ -58,7 +58,7 @@ public class SlaveTCP_RTU {
                 }
             }
         };
-//        new Thread(thread).start();
+        new Thread(thread).start();
 
 
         try {
