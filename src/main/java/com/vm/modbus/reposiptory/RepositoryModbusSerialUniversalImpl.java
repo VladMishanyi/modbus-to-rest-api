@@ -3,7 +3,6 @@ package com.vm.modbus.reposiptory;
 import com.serotonin.modbus4j.BatchRead;
 import com.serotonin.modbus4j.ModbusLocator;
 import com.serotonin.modbus4j.exception.ModbusInitException;
-import com.serotonin.modbus4j.exception.ModbusTransportException;
 import com.vm.modbus.*;
 import com.vm.modbus.cache.MetadataGenerator;
 import com.vm.modbus.device.DeviceCache;
@@ -74,7 +73,7 @@ public class RepositoryModbusSerialUniversalImpl implements RepositoryModbusUniv
                         modbusFloat.setValuesDefault(listFloat, 1);
                         modbusMasterSerialFirst = initMaster();
                         LOGGER.error("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
-                    } catch (ModbusTransportException e) {
+                    } catch (Exception | Error e) {
                         modbusFloat.setValuesDefault(listFloat, 1);
                         LOGGER.error("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     }
@@ -94,7 +93,7 @@ public class RepositoryModbusSerialUniversalImpl implements RepositoryModbusUniv
                         modbusInteger.setValuesDefault(listInt, 1);
                         modbusMasterSerialFirst = initMaster();
                         LOGGER.error("ModBus read init problem, device:"+ fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
-                    } catch (ModbusTransportException e) {
+                    } catch (Exception | Error e) {
                         modbusInteger.setValuesDefault(listInt, 1);
                         LOGGER.error("ModBus read transport problem, device:" + fil.getAddress() + " offset:" + fil.getOffset() + " type:" + fil.getDataType() + " error:" + e.getMessage());
                     }
@@ -133,7 +132,7 @@ public class RepositoryModbusSerialUniversalImpl implements RepositoryModbusUniv
                         modbusFloat.setValuesDefault(listFloat, 1);
                         modbusMasterSerialFirst = initMaster();
                         LOGGER.error("ModBus read init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                    } catch (ModbusTransportException e) {
+                    } catch (Exception | Error e) {
                         modbusFloat.setValuesDefault(listFloat, 1);
                         LOGGER.error("ModBus read transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
@@ -153,7 +152,7 @@ public class RepositoryModbusSerialUniversalImpl implements RepositoryModbusUniv
                         modbusInteger.setValuesDefault(listInt, 1);
                         modbusMasterSerialFirst = initMaster();
                         LOGGER.error("ModBus Init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                    } catch (ModbusTransportException e) {
+                    } catch (Exception | Error e) {
                         modbusInteger.setValuesDefault(listInt, 1);
                         LOGGER.error("ModBus transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
@@ -181,7 +180,7 @@ public class RepositoryModbusSerialUniversalImpl implements RepositoryModbusUniv
                     } catch (ModbusInitException e) {
                         modbusMasterSerialFirst = initMaster();
                         LOGGER.error("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
-                    } catch (ModbusTransportException e) {
+                    } catch (Exception | Error e) {
                         LOGGER.error("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(value);
@@ -197,7 +196,7 @@ public class RepositoryModbusSerialUniversalImpl implements RepositoryModbusUniv
                         modbusMasterSerialFirst = initMaster();
                         LOGGER.error("ModBus write init problem, slave address №"+ address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
 
-                    } catch (ModbusTransportException e) {
+                    } catch (Exception | Error e) {
                         LOGGER.error("ModBus write transport problem, device: " + address + " offset: " + fil.getOffset() + " error: " + e.getMessage());
                     }
                     fil.setValue(value);
